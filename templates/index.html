@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePass Analyzer</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#password').on('input', function() {
+                var password = $(this).val();
+                if (password.length > 0) {
+                    $.ajax({
+                        url: '/check_password',
+                        type: 'POST',
+                        data: { password: password },
+                        success: function(result) {
+                            $('#result').text(result);
+                        }
+                    });
+                    // Check for character types and activate corresponding checkboxes
+                    $('#num-checkbox').prop('checked', /[0-9]/.test(password));
+                    $('#lowercase-checkbox').prop('checked', /[a-z]/.test(password));
+                    $('#uppercase-checkbox').prop('checked', /[A-Z]/.test(password));
+                    $('#symbol-checkbox').prop('checked', /[!@#$%^&*(),.?":{}|<>]/.test(password));
+                } else {
+                    $('#result').empty();
+                    // If no password entered, deactivate all checkboxes
+                    $('input[type="checkbox"]').prop('checked', false);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <h1>
+            Discover Your Password's Strength with SecurePass Analyzer
+        </h1>
+    </div>
+    
+    <label for="password">Enter your password:</label><br>
+    <input type="text" id="password" name="password" placeholder="Enter a password"><br>
+    <p>Brute Force Attack</p>
+    <div id="result"></div>
+
+    <div>
+        <input type="checkbox" id="num-checkbox" disabled> Numbers (0-9)<br>
+        <input type="checkbox" id="lowercase-checkbox" disabled> Lowercase letters (a-z)<br>
+        <input type="checkbox" id="uppercase-checkbox" disabled> Uppercase letters (A-Z)<br>
+        <input type="checkbox" id="symbol-checkbox" disabled> Symbols<br>
+    </div>
+</body>
+</html>
